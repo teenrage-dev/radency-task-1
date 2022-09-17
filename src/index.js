@@ -1,7 +1,6 @@
 import renderNotesList from './js/noteListMakeMarkup';
 import refs from './js/refs';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import renderStatisticsList from './js/statisticsMakeMarkup';
 
 const note = {
   name: '',
