@@ -1,0 +1,42 @@
+.header-statistics-container {
+  margin-bottom: 10px;
+}
+
+.header-statistics-item:nth-child(1) {
+  width: 40%;
+}
+
+.statistics-item {
+  justify-content: start;
+}
+
+.statistics-item-item {
+  width: 20%;
+}
+
+.statistics-item-item:first-child {
+  width: 40px;
+}
+
+.statistics-item-item:nth-child(2) {
+  width: 40%;
+}
+
+.statistics-item-item:not(:last-child) {
+  margin-right: 20px;
+}
+
+.statistics-btn {
+  width: 100%;
+  max-width: 50px;
+  background-color: transparent;
+  border: none;
+  text-align: left;
+  color: #9b9b9b;
+  cursor: default;
+}
+
+.archived-btn:hover {
+  cursor: pointer;
+  color: #303030;
+}

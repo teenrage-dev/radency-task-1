@@ -1,4 +1,13 @@
-@import './common';
-@import './header';
-@import './createBtn';
-@import './noteList';
+@import './base/common';
+@import './base//reset';
+
+@import './components/container';
+@import './components/sections';
+@import './components/modal';
+
+@import './layout/header';
+@import './layout/noteList';
+@import './layout/createBtn';
+@import './layout/statisticsList';
+
+@import './utils/hidden';

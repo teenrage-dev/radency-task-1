@@ -58,7 +58,10 @@
   font-size: 20px;
   font-weight: 500;
   color: #4e4e4e;
-  // width: 20%;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .notes-text {

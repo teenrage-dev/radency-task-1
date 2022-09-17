@@ -1,14 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <div class="modal-create-notes is-hidden" data-modal>
-      <div class="modal__card-content" data-modal-content></div>
-    </div>
-  </body>
-</html>
+<div class="modal-background is-hidden" data-modal>
+  <div class="modal-create-notes">
+    <button type="button" class="modal-close" data-modal-close>
+      <svg class="icon icon-close" width="14" height="14">
+        <use xlink:href="./images/sprite.svg#icon-close"></use>
+      </svg>
+    </button>
+    <form action="submit" class="modal-form">
+      <label class="label-text" for="name">Name</label>
+      <input
+        id="name-input"
+        class="input"
+        type="text"
+        name="name"
+        placeholder="Write note name"
+      />
+      <label class="label-text" for="category">Category</label>
+      <select id="category" class="input" name="category">
+        <option value="Task" selected="selected">Task</option>
+        <option value="Random Thought">Random Thought</option>
+        <option value="Idea">Idea</option>
+      </select>
+      <label class="label-text" for="content">Content</label>
+      <textarea
+        name="content"
+        id="content-text"
+        class="content"
+        placeholder="Write note content ..."
+      ></textarea>
+      <label class="label-text" for="dates">Dates</label>
+      <input
+        id="dates-input"
+        type="date"
+        class="input input-date"
+        name="dates"
+      />
+      <div class="modal-btn-container">
+        <button type="submit" class="modal-btn-send">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
