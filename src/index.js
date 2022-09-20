@@ -1,6 +1,11 @@
 import renderNotesList from './js/noteListMakeMarkup';
 import refs from './js/refs';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import openStatisticsNotes from './js/openNotesStatisitcs';
+import deleteItem from './js/deleteItem';
+import archivedCurrentItem from './js/archivedCurrentItem';
+import { unArchivedAllItems } from './js/unArchivedFn/unArchivedAllItems';
+import { unArchivedItem } from './js/unArchivedFn/unArchivedItem';
 
 const note = {
   name: '',
@@ -18,7 +23,7 @@ const statisticsByTask = {
 const statisticsByThought = {
   active: 0,
   archived: 0,
-  id: 'thought',
+  id: 'random-thought',
 };
 const statisticsByIdea = {
   active: 0,
@@ -27,6 +32,86 @@ const statisticsByIdea = {
 };
 
 refs.isHidden.addEventListener('click', handleOpenModal);
+
+function openStatisticsTaskNotes(e) {
+  const {
+    statisticsTaskModal,
+    statisticsTaskModalClose,
+    statisticsArchivedListTask,
+  } = refs;
+
+  const statisticsBtnOfOpen = refs.statisticsTask.children[3].firstElementChild;
+  if (statisticsByTask.archived === 0) {
+    statisticsBtnOfOpen.removeEventListener('click', openStatisticsTaskNotes);
+    return;
+  }
+
+  openStatisticsNotes(
+    statisticsTaskModal,
+    statisticsTaskModalClose,
+    statisticsArchivedListTask,
+    statisticsByTask,
+    refs.statisticsTask,
+    unArchivedItem,
+    unArchivedAllItems,
+    refs.statisticsArchivedAllTask,
+    handleItem
+  );
+}
+
+function openStatisticsThoughtNotes(e) {
+  const {
+    statisticsThoughtModal,
+    statisticsThoughtModalClose,
+    statisticsArchivedListThought,
+  } = refs;
+  const statisticsBtnOfOpen =
+    refs.statisticsThought.children[3].firstElementChild;
+  if (statisticsByThought.archived === 0) {
+    statisticsBtnOfOpen.removeEventListener(
+      'click',
+      openStatisticsThoughtNotes
+    );
+    return;
+  }
+
+  openStatisticsNotes(
+    statisticsThoughtModal,
+    statisticsThoughtModalClose,
+    statisticsArchivedListThought,
+    statisticsByThought,
+    refs.statisticsThought,
+    unArchivedItem,
+    unArchivedAllItems,
+    refs.statisticsArchivedAllThought,
+    handleItem
+  );
+}
+
+function openStatisticsIdeaNotes(e) {
+  const {
+    statisticsIdeaModal,
+    statisticsIdeaModalClose,
+    statisticsArchivedListIdea,
+  } = refs;
+  const statisticsBtnOfOpen = refs.statisticsIdea.children[3].firstElementChild;
+  if (statisticsByIdea.archived === 0) {
+    statisticsBtnOfOpen.removeEventListener('click', openStatisticsIdeaNotes);
+    return;
+  }
+
+  openStatisticsNotes(
+    statisticsIdeaModal,
+    statisticsIdeaModalClose,
+    statisticsArchivedListIdea,
+    statisticsByIdea,
+    refs.statisticsIdea,
+    unArchivedItem,
+    unArchivedAllItems,
+    refs.statisticsArchivedAllIdea,
+    handleItem
+  );
+}
 
 function handleOpenModal(e) {
   refs.modal.classList.remove('is-hidden');
@@ -54,7 +139,7 @@ function handleOpenModal(e) {
   document.addEventListener('keydown', closeModalKey);
 
   function closeModalBackdrop(e) {
-    if (e.target.attributes[1].name === 'data-modal') {
+    if (e.target.attributes[1]?.name === 'data-modal') {
       refs.modal.classList.add('is-hidden');
       removeEventListener();
     }
@@ -90,24 +175,34 @@ function handleSubmitForm(e) {
   }
   renderNotesList(note);
   if (refs.notesItem().length > 1) {
+    // Замінитти 1 на 0
     refs.notesItem().forEach(item => {
-      item.removeEventListener('click', handleDeleteItem);
+      item.removeEventListener('click', handleItem);
     });
   }
 
+  refs.archivedAll.removeEventListener(
+    'click',
+    archivedAllItems,
+    console.log('removeEventListener')
+  );
+
+  // refs.deleteAll.removeEventListener('click', deleteAllItems);
+
   refs.notesItem().forEach(item => {
-    const taskItems = document.querySelectorAll('#task');
+    const taskItems = refs.notesList.querySelectorAll('.task');
     statisticsByTask.active = taskItems.length - statisticsByTask.archived;
 
-    const thoughtItems = document.querySelectorAll('#random-thought');
+    const thoughtItems = refs.notesList.querySelectorAll('.random-thought');
     statisticsByThought.active =
       thoughtItems.length - statisticsByThought.archived;
 
-    const ideaItems = document.querySelectorAll('#idea');
+    const ideaItems = refs.notesList.querySelectorAll('.idea');
     statisticsByIdea.active = ideaItems.length - statisticsByIdea.archived;
 
-    item.addEventListener('click', handleDeleteItem);
+    item.addEventListener('click', handleItem);
   });
+
   if (statisticsByTask.active > 0 || statisticsByTask.archived > 0) {
     refs.statisticsTask.children[2].firstElementChild.textContent =
       statisticsByTask.active;
@@ -129,19 +224,119 @@ function handleSubmitForm(e) {
       statisticsByIdea.archived;
   }
   e.currentTarget.reset();
+  note.name = '';
+  note.category = '';
+  note.content = '';
+  note.dates = '';
 
-  refs.deleteAll.addEventListener('click', e => {
-    refs.notesList.innerHTML = '';
+  refs.archivedAll.addEventListener(
+    'click',
+    archivedAllItems,
+    console.log('addEventListener')
+  );
 
-    refs.statisticsTask.children[2].firstElementChild.textContent = 0;
-    refs.statisticsTask.children[3].firstElementChild.textContent = 0;
+  refs.deleteAll.addEventListener('click', deleteAllItems);
+}
 
-    refs.statisticsThought.children[2].firstElementChild.textContent = 0;
-    refs.statisticsThought.children[3].firstElementChild.textContent = 0;
+function archivedAllItems(e) {
+  console.log(e);
+  refs.notesItem().forEach(item => {
+    if (item.classList.contains('task')) {
+      console.dir(item.id);
 
-    refs.statisticsIdea.children[2].firstElementChild.textContent = 0;
-    refs.statisticsIdea.children[3].firstElementChild.textContent = 0;
+      if (item.classList.contains('visually-hidden')) {
+        return;
+      } else {
+        item.classList.add('visually-hidden');
+        archivedCurrentItem(
+          item,
+          refs.statisticsTask,
+          refs.statisticsArchivedListTask,
+          statisticsByTask,
+          openStatisticsTaskNotes
+        );
+      }
+    }
+
+    if (item.classList.contains('random-thought')) {
+      console.dir(item.id);
+      if (item.classList.contains('visually-hidden')) {
+        return;
+      } else {
+        item.classList.add('visually-hidden');
+
+        archivedCurrentItem(
+          item,
+          refs.statisticsThought,
+          refs.statisticsArchivedListThought,
+          statisticsByThought,
+          openStatisticsThoughtNotes
+        );
+      }
+    }
+    if (item.classList.contains('idea')) {
+      console.dir(item.id);
+      if (item.classList.contains('visually-hidden')) {
+        return;
+      } else {
+        item.classList.add('visually-hidden');
+
+        item.classList.add('visually-hidden');
+
+        archivedCurrentItem(
+          item,
+          refs.statisticsIdea,
+          refs.statisticsArchivedListIdea,
+          statisticsByIdea,
+          openStatisticsIdeaNotes
+        );
+      }
+    }
   });
+}
+
+function deleteAllItems(e) {
+  const statisticsTaskBtnOfOpen =
+    refs.statisticsTask.children[3].firstElementChild;
+  const statisticsThoughtBtnOfOpen =
+    refs.statisticsThought.children[3].firstElementChild;
+  const statisticsIdeaBtnOfOpen =
+    refs.statisticsIdea.children[3].firstElementChild;
+
+  refs.notesList.innerHTML = '';
+  refs.statisticsArchivedListTask.innerHTML = '';
+  refs.statisticsArchivedListThought.innerHTML = '';
+  refs.statisticsArchivedListIdea.innerHTML = '';
+
+  statisticsByTask.active = 0;
+  statisticsByTask.archived = 0;
+
+  statisticsByThought.active = 0;
+  statisticsByThought.archived = 0;
+
+  statisticsByIdea.active = 0;
+  statisticsByIdea.archived = 0;
+
+  refs.statisticsTask.children[2].firstElementChild.textContent = 0;
+  statisticsTaskBtnOfOpen.textContent = 0;
+
+  refs.statisticsThought.children[2].firstElementChild.textContent = 0;
+  statisticsThoughtBtnOfOpen.textContent = 0;
+
+  refs.statisticsIdea.children[2].firstElementChild.textContent = 0;
+  statisticsIdeaBtnOfOpen.textContent = 0;
+
+  statisticsTaskBtnOfOpen.removeEventListener('click', openStatisticsTaskNotes);
+  statisticsThoughtBtnOfOpen.removeEventListener(
+    'click',
+    openStatisticsThoughtNotes
+  );
+  statisticsIdeaBtnOfOpen.removeEventListener('click', openStatisticsIdeaNotes);
+  refs.archivedAll.removeEventListener(
+    'click',
+    archivedAllItems,
+    console.log('addEventListener')
+  );
 }
 
 function handleChangeName(e) {
@@ -160,14 +355,48 @@ function handleChangeDates(e) {
   note.dates = e.target.value;
 }
 
-function handleDeleteItem(e) {
-  const btn = e.target.parentNode.classList.contains('notes-icon');
-  if (e.target === e.currentTarget) {
-    console.log(e.target);
+function handleItem(e) {
+  // console.log(e.target);
+  const btnArchived = e.target.closest('#archived');
+  const btnDelete = e.target.closest('#delete');
+
+  if (btnArchived) {
+    e.currentTarget.classList.add('visually-hidden');
+    e.currentTarget.removeEventListener('click', handleItem);
+    if (e.currentTarget.classList.contains('task')) {
+      archivedCurrentItem(
+        e.currentTarget,
+        refs.statisticsTask,
+        refs.statisticsArchivedListTask,
+        statisticsByTask,
+        openStatisticsTaskNotes
+      );
+    }
+    if (e.currentTarget.classList.contains('random-thought')) {
+      archivedCurrentItem(
+        e.currentTarget,
+        refs.statisticsThought,
+        refs.statisticsArchivedListThought,
+        statisticsByThought,
+        openStatisticsThoughtNotes
+      );
+    }
+    if (e.currentTarget.classList.contains('idea')) {
+      archivedCurrentItem(
+        e.currentTarget,
+        refs.statisticsIdea,
+        refs.statisticsArchivedListIdea,
+        statisticsByIdea,
+        openStatisticsIdeaNotes
+      );
+    }
   }
-  if (btn) {
-    console.log(e.target, e.currentTarget);
+
+  if (btnDelete) {
     e.currentTarget.remove();
-    e.currentTarget.removeEventListener('click', handleDeleteItem);
+    deleteItem(e, statisticsByTask, refs.statisticsTask);
+    deleteItem(e, statisticsByThought, refs.statisticsThought);
+    deleteItem(e, statisticsByIdea, refs.statisticsIdea);
+    e.currentTarget.removeEventListener('click', handleItem);
   }
 }

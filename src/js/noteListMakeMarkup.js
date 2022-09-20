@@ -1,6 +1,7 @@
 import refs from './refs';
 import sprite from '../images/sprite.svg';
 import { format } from 'date-fns';
+import { nanoid } from 'nanoid';
 
 function noteListMakeMarkup({ name, category, content, dates }) {
   const curentDay = format(new Date(), 'MMM dd, yyyy');
@@ -36,7 +37,7 @@ function noteListMakeMarkup({ name, category, content, dates }) {
   }
 
   return `
-      <li class="notes-item" id="${id}">
+      <li class="notes-item ${id}" id="${nanoid()}">
       <div class="notes-item-container">
         <svg class="item-icon" width="23" height="23">
           <use xlink:href="${icon}"></use>

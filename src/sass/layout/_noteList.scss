@@ -1,5 +1,19 @@
 .main {
   padding-top: 0;
+  height: 100%;
+  max-height: 50vh;
+}
+
+.notes-list-container {
+  max-height: 50vh;
+  height: 100%;
+}
+
+.notes-list {
+  max-height: 50vh;
+  height: 100%;
+  white-space: nowrap;
+  overflow: auto;
 }
 
 .notes-item {

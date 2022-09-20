@@ -33,6 +33,10 @@
   font-size: 20px;
   font-weight: 500;
   color: #f0f0f0;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .item-btn {
