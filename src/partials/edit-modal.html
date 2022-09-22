@@ -1,0 +1,46 @@
+<div class="modal-background is-hidden" data-edit-modal>
+  <div class="modal-create-notes">
+    <button type="button" class="modal-close" data-edit-modal-close>
+      <svg class="icon icon-close" width="14" height="14">
+        <use xlink:href="./images/sprite.svg#icon-close"></use>
+      </svg>
+    </button>
+    <form action="submit" class="modal-form" id="modal-edit-form">
+      <label class="label-text" for="name-edit">Name</label>
+      <input
+        id="name-edit-input"
+        class="input"
+        type="text"
+        name="name-edit"
+        placeholder="Write note name"
+        required
+      />
+      <label class="label-text" for="category-edit">Category</label>
+      <select id="category-edit" class="input" name="category-edit">
+        <option value="Task" selected="selected">Task</option>
+        <option value="Random Thought">Random Thought</option>
+        <option value="Idea">Idea</option>
+      </select>
+      <label class="label-text" for="content-edit">Content</label>
+      <textarea
+        name="content-edit"
+        id="content-edit-text"
+        class="content"
+        placeholder="Write note content ..."
+        required
+      ></textarea>
+      <label class="label-text" for="dates-edit">Dates</label>
+      <input
+        id="dates-edit-input"
+        type="date"
+        class="input input-date"
+        name="dates-edit"
+      />
+      <div class="modal-btn-container">
+        <button type="submit" class="modal-btn-send" id="edit-btn-form">
+          Send
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

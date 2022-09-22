@@ -6,6 +6,8 @@ import deleteItem from './js/deleteItem';
 import archivedCurrentItem from './js/archivedCurrentItem';
 import { unArchivedAllItems } from './js/unArchivedFn/unArchivedAllItems';
 import { unArchivedItem } from './js/unArchivedFn/unArchivedItem';
+import { format } from 'date-fns';
+import sprite from './images/sprite.svg';
 
 const note = {
   name: '',
@@ -152,8 +154,6 @@ function handleOpenModal(e) {
 
   refs.content.addEventListener('change', handleChangeContent);
 
-  refs.dates.addEventListener('change', handleChangeDates);
-
   refs.form.addEventListener('submit', handleSubmitForm);
 }
 
@@ -173,19 +173,15 @@ function handleSubmitForm(e) {
     Notify.warning('Write your message!');
     return;
   }
+
   renderNotesList(note);
-  if (refs.notesItem().length > 1) {
-    // Замінитти 1 на 0
+  if (refs.notesItem().length > 0) {
     refs.notesItem().forEach(item => {
       item.removeEventListener('click', handleItem);
     });
   }
 
-  refs.archivedAll.removeEventListener(
-    'click',
-    archivedAllItems,
-    console.log('removeEventListener')
-  );
+  refs.archivedAll.removeEventListener('click', archivedAllItems);
 
   // refs.deleteAll.removeEventListener('click', deleteAllItems);
 
@@ -228,12 +224,9 @@ function handleSubmitForm(e) {
   note.category = '';
   note.content = '';
   note.dates = '';
+  refs.modal.classList.add('is-hidden');
 
-  refs.archivedAll.addEventListener(
-    'click',
-    archivedAllItems,
-    console.log('addEventListener')
-  );
+  refs.archivedAll.addEventListener('click', archivedAllItems);
 
   refs.deleteAll.addEventListener('click', deleteAllItems);
 }
@@ -356,9 +349,163 @@ function handleChangeDates(e) {
 }
 
 function handleItem(e) {
-  // console.log(e.target);
+  const btnEdit = e.target.closest('#edit');
   const btnArchived = e.target.closest('#archived');
   const btnDelete = e.target.closest('#delete');
+
+  if (btnEdit) {
+    refs.formEdit.removeEventListener('submit', handleEditSubmit);
+    refs.modalEdit.classList.remove('is-hidden');
+    current = e.currentTarget;
+
+    function removeEventListener() {
+      refs.modalEditCLose.removeEventListener('click', closeModalBtn);
+      document.removeEventListener('keydown', closeModalKey);
+      document.removeEventListener('click', closeModalBackdrop);
+      refs.nameEdit.removeEventListener('change', handleChangeName);
+
+      refs.categoryEdit.removeEventListener('change', handleChangeCategory);
+
+      refs.contenEdit.removeEventListener('change', handleChangeContent);
+
+      refs.datesEdit.removeEventListener('change', handleChangeDates);
+
+      refs.formEdit.removeEventListener('submit', handleEditSubmit);
+    }
+
+    function closeModalBtn() {
+      refs.modalEdit.classList.add('is-hidden');
+      removeEventListener();
+    }
+
+    refs.modalEditCLose.addEventListener('click', closeModalBtn);
+
+    function closeModalKey(e) {
+      if (e.key === 'Escape') {
+        refs.modalEdit.classList.add('is-hidden');
+        removeEventListener();
+      }
+    }
+
+    document.addEventListener('keydown', closeModalKey);
+
+    function closeModalBackdrop(e) {
+      if (e.target.attributes[1]?.name === 'data-edit-modal') {
+        refs.modalEdit.classList.add('is-hidden');
+        removeEventListener();
+      }
+    }
+    document.addEventListener('click', closeModalBackdrop);
+
+    refs.nameEdit.addEventListener('change', handleChangeName);
+
+    refs.categoryEdit.addEventListener('change', handleChangeCategory);
+
+    refs.contenEdit.addEventListener('change', handleChangeContent);
+
+    refs.datesEdit.addEventListener('change', handleChangeDates);
+
+    refs.formEdit.addEventListener('submit', handleEditSubmit);
+
+    function handleEditSubmit(event) {
+      event.preventDefault();
+      // if (note.name === '') {
+      //   Notify.warning('Write Note Name!');
+      //   return;
+      // }
+
+      if (note.category === '') {
+        note.category = 'Task';
+      }
+
+      // if (note.content === '') {
+      //   Notify.warning('Write your message!');
+      //   return;
+      // }
+
+      let fromDay = null;
+      let toDay = null;
+      let icon = '';
+      let id = '';
+
+      if (note.dates !== '') {
+        fromDay = format(new Date(), 'd/M/yyyy');
+        toDay = format(new Date(note.dates), 'd/M/yyyy');
+      } else {
+        fromDay = '';
+        toDay = '';
+      }
+
+      switch (note.category) {
+        case 'Task':
+          icon = `${sprite}#icon-shop`;
+          id = 'task';
+          break;
+        case 'Random Thought':
+          icon = `${sprite}#icon-thought`;
+          id = 'random-thought';
+          break;
+        case 'Idea':
+          icon = `${sprite}#icon-idea`;
+          id = 'idea';
+          break;
+        default:
+          return;
+      }
+      if (current?.classList[1] !== id) {
+        if (current.classList[1] === statisticsByTask.id) {
+          statisticsByTask.active -= 1;
+          refs.statisticsTask.children[2].firstElementChild.textContent =
+            statisticsByTask.active;
+        }
+        if (current.classList[1] === statisticsByThought.id) {
+          statisticsByThought.active -= 1;
+          refs.statisticsThought.children[2].firstElementChild.textContent =
+            statisticsByThought.active;
+        }
+        if (current.classList[1] === statisticsByIdea.id) {
+          statisticsByIdea.active -= 1;
+          refs.statisticsIdea.children[2].firstElementChild.textContent =
+            statisticsByIdea.active;
+        }
+        if (id === statisticsByTask.id) {
+          statisticsByTask.active += 1;
+          refs.statisticsTask.children[2].firstElementChild.textContent =
+            statisticsByTask.active;
+        }
+        if (id === statisticsByThought.id) {
+          statisticsByThought.active += 1;
+          refs.statisticsThought.children[2].firstElementChild.textContent =
+            statisticsByThought.active;
+        }
+        if (id === statisticsByIdea.id) {
+          statisticsByIdea.active += 1;
+          refs.statisticsIdea.children[2].firstElementChild.textContent =
+            statisticsByIdea.active;
+        }
+        current.classList.remove(current.classList[1]);
+
+        current.classList.add(id);
+        current.children[0].firstElementChild.innerHTML = `<svg class="item-icon" width="23" height="23">
+              <use xlink:href="${icon}"></use>
+            </svg>`;
+        current.children[3].textContent = note.category;
+      }
+      current.children[1].textContent = note.name;
+      current.children[4].textContent = note.content;
+      current.children[5].textContent = `${fromDay}${
+        fromDay === '' ? '' : ', '
+      }  ${toDay}`;
+
+      event.currentTarget.reset();
+      note.name = '';
+      note.category = '';
+      note.content = '';
+      note.dates = '';
+
+      refs.modalEdit.classList.add('is-hidden');
+    }
+  }
 
   if (btnArchived) {
     e.currentTarget.classList.add('visually-hidden');

@@ -5,7 +5,7 @@
         <use xlink:href="./images/sprite.svg#icon-close"></use>
       </svg>
     </button>
-    <form action="submit" class="modal-form">
+    <form action="submit" class="modal-form" id="modal-form">
       <label class="label-text" for="name">Name</label>
       <input
         id="name-input"
@@ -27,13 +27,6 @@
         class="content"
         placeholder="Write note content ..."
       ></textarea>
-      <label class="label-text" for="dates">Dates</label>
-      <input
-        id="dates-input"
-        type="date"
-        class="input input-date"
-        name="dates"
-      />
       <div class="modal-btn-container">
         <button type="submit" class="modal-btn-send">Send</button>
       </div>

@@ -5,16 +5,6 @@ import { nanoid } from 'nanoid';
 
 function noteListMakeMarkup({ name, category, content, dates }) {
   const curentDay = format(new Date(), 'MMM dd, yyyy');
-  let fromDay = null;
-  let toDay = null;
-
-  if (dates !== '') {
-    fromDay = format(new Date(), 'd/M/yyyy');
-    toDay = format(new Date(dates), 'd/M/yyyy');
-  } else {
-    fromDay = '';
-    toDay = '';
-  }
 
   let icon = '';
   let id = '';
@@ -52,7 +42,6 @@ function noteListMakeMarkup({ name, category, content, dates }) {
         ${content}
       </p>
       <p class="notes-text notes-item-item">
-      ${fromDay}${fromDay === '' ? '' : ', '}  ${toDay} 
       </p>
       <button id="edit" class="notes-item-btn notes-item-item">
         <svg class="item-icon notes-icon" width="23" height="23">
